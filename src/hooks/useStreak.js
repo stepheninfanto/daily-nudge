@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
-const STORAGE_KEY = 'nudge-streak';
+const STORAGE_KEY = "nudge-streak";
 
 const getDateString = (date = new Date()) => {
-  return date.toISOString().split('T')[0];
+  return date.toISOString().split("T")[0];
 };
 
 const getYesterdayString = () => {
@@ -17,85 +17,89 @@ const encouragingMessages = [
   "Every day is a new opportunity. Welcome back!",
   "The journey continues. One step at a time.",
   "Welcome back! Your future self is cheering you on.",
-  "Another day, another chance to make it count."
+  "Another day, another chance to make it count.",
 ];
 
-export function useStreak() {
-  const [streakData, setStreakData] = useState({
+const getInitialStreakData = () => {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    try {
+      const data = JSON.parse(stored);
+      const today = getDateString();
+      const yesterday = getYesterdayString();
+
+      if (data.lastCompletionDate && data.lastCompletionDate !== today) {
+        if (data.lastCompletionDate !== yesterday) {
+          data.justReset = true;
+          data.resetMessage =
+            encouragingMessages[
+              Math.floor(Math.random() * encouragingMessages.length)
+            ];
+          data.count = 0;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+      }
+
+      return data;
+    } catch {
+      return {
+        count: 0,
+        lastCompletionDate: null,
+        totalCompletions: 0,
+        justReset: false,
+        resetMessage: null,
+      };
+    }
+  }
+  return {
     count: 0,
     lastCompletionDate: null,
     totalCompletions: 0,
     justReset: false,
-    resetMessage: null
-  });
+    resetMessage: null,
+  };
+};
 
-  const checkAndReset = useCallback(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        const data = JSON.parse(stored);
-        const today = getDateString();
-        const yesterday = getYesterdayString();
-        
-        if (data.lastCompletionDate && data.lastCompletionDate !== today) {
-          if (data.lastCompletionDate !== yesterday) {
-            data.justReset = true;
-            data.resetMessage = encouragingMessages[Math.floor(Math.random() * encouragingMessages.length)];
-            data.count = 0;
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-          }
-        }
-        
-        setStreakData(data);
-        return data;
-      } catch {
-        return null;
-      }
-    }
-    return null;
-  }, []);
-
-  useEffect(() => {
-    checkAndReset();
-  }, [checkAndReset]);
+export function useStreak() {
+  const [streakData, setStreakData] = useState(getInitialStreakData);
 
   const incrementStreak = useCallback(() => {
     const today = getDateString();
-    
-    setStreakData(prev => {
+
+    setStreakData((prev) => {
       if (prev.lastCompletionDate === today) {
         return prev;
       }
-      
+
       const yesterday = getYesterdayString();
       let newCount = prev.count;
-      
+
       if (prev.lastCompletionDate === yesterday) {
         newCount = prev.count + 1;
       } else {
         newCount = 1;
       }
-      
+
       const newData = {
         count: newCount,
         lastCompletionDate: today,
         totalCompletions: prev.totalCompletions + 1,
         justReset: false,
-        resetMessage: null
+        resetMessage: null,
       };
-      
+
       localStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
       return newData;
     });
-    
+
     return true;
   }, []);
 
   const clearResetMessage = useCallback(() => {
-    setStreakData(prev => ({
+    setStreakData((prev) => ({
       ...prev,
       justReset: false,
-      resetMessage: null
+      resetMessage: null,
     }));
   }, []);
 
@@ -108,6 +112,6 @@ export function useStreak() {
     justReset: streakData.justReset,
     resetMessage: streakData.resetMessage,
     incrementStreak,
-    clearResetMessage
+    clearResetMessage,
   };
 }

@@ -1,23 +1,23 @@
 @import "tailwindcss";
 
 @theme {
-  --color-warm-50: #FAF8F5;
-  --color-warm-100: #F5F1EC;
-  --color-warm-200: #E8E0D5;
-  --color-warm-300: #D4C4B0;
-  --color-warm-400: #B8A089;
-  --color-warm-500: #9A7D65;
-  
-  --color-night-900: #1C1C1E;
-  --color-night-800: #2C2C2E;
-  --color-night-700: #3A3A3C;
-  --color-night-600: #48484A;
-  
-  --color-accent-light: #6B8CAE;
-  --color-accent-dark: #F5A962;
-  
-  --font-family-serif: 'Lora', Georgia, serif;
-  --font-family-sans: 'Inter', system-ui, sans-serif;
+  --color-warm-50: #faf8f5;
+  --color-warm-100: #f5f1ec;
+  --color-warm-200: #e8e0d5;
+  --color-warm-300: #d4c4b0;
+  --color-warm-400: #b8a089;
+  --color-warm-500: #9a7d65;
+
+  --color-night-900: #1c1c1e;
+  --color-night-800: #2c2c2e;
+  --color-night-700: #3a3a3c;
+  --color-night-600: #48484a;
+
+  --color-accent-light: #6b8cae;
+  --color-accent-dark: #f5a962;
+
+  --font-family-serif: "Lora", Georgia, serif;
+  --font-family-sans: "Inter", system-ui, sans-serif;
 }
 
 @layer base {
@@ -25,20 +25,20 @@
     font-family: var(--font-family-sans);
     -webkit-tap-highlight-color: transparent;
   }
-  
+
   body {
-    @apply bg-warm-50 text-gray-700 antialiased;
+    @apply bg-warm-50 text-gray-800 antialiased;
     min-height: 100dvh;
   }
-  
+
   .dark body {
-    @apply bg-night-900 text-gray-100;
+    @apply bg-night-900 text-amber-100;
   }
-  
+
   ::selection {
     @apply bg-accent-light/30;
   }
-  
+
   .dark ::selection {
     @apply bg-accent-dark/30;
   }
@@ -48,19 +48,19 @@
   .btn {
     @apply px-4 py-2 rounded-full font-medium transition-all duration-200 active:scale-95;
   }
-  
+
   .btn-primary {
     @apply bg-accent-light text-white hover:bg-accent-light/90;
   }
-  
+
   .dark .btn-primary {
     @apply bg-accent-dark text-night-900 hover:bg-accent-dark/90;
   }
-  
+
   .btn-ghost {
     @apply text-gray-500 hover:bg-gray-100;
   }
-  
+
   .dark .btn-ghost {
     @apply text-gray-400 hover:bg-night-700;
   }

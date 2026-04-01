@@ -1,10 +1,38 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 const STORAGE_KEY = 'nudge-reflection';
+const HISTORY_KEY = 'nudge-reflection-history';
 const LAST_PROMPTED_KEY = 'nudge-reflection-last-prompted';
+const MAX_DAYS = 30;
 
 const getDateString = (date = new Date()) => {
   return date.toISOString().split('T')[0];
+};
+
+const checkHasReflectedToday = () => {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    try {
+      const data = JSON.parse(stored);
+      const today = getDateString();
+      return data.date === today && data.completed;
+    } catch {
+      return false;
+    }
+  }
+  return false;
+};
+
+const shouldShowReflection = () => {
+  const lastPrompted = localStorage.getItem(LAST_PROMPTED_KEY);
+  const today = getDateString();
+  const hour = new Date().getHours();
+  
+  if (lastPrompted !== today && hour >= 18) {
+    localStorage.setItem(LAST_PROMPTED_KEY, today);
+    return true;
+  }
+  return false;
 };
 
 export function useReflection() {
@@ -15,34 +43,8 @@ export function useReflection() {
     improvement: ''
   });
   
-  const [hasReflectedToday, setHasReflectedToday] = useState(false);
-  const [showReflection, setShowReflection] = useState(false);
-
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        const data = JSON.parse(stored);
-        const today = getDateString();
-        if (data.date === today && data.completed) {
-          setHasReflectedToday(true);
-        }
-      } catch {
-        // Ignore parse errors
-      }
-    }
-
-    const lastPrompted = localStorage.getItem(LAST_PROMPTED_KEY);
-    const today = getDateString();
-    
-    if (lastPrompted !== today && !hasReflectedToday) {
-      const hour = new Date().getHours();
-      if (hour >= 18 || hour < 4) {
-        setShowReflection(true);
-        localStorage.setItem(LAST_PROMPTED_KEY, today);
-      }
-    }
-  }, [hasReflectedToday]);
+  const [hasReflectedToday, setHasReflectedToday] = useState(checkHasReflectedToday);
+  const [showReflection, setShowReflection] = useState(shouldShowReflection);
 
   const updateReflection = useCallback((field, value) => {
     setReflection(prev => ({ ...prev, [field]: value }));
@@ -59,6 +61,32 @@ export function useReflection() {
       completed: true
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    
+    const historyStored = localStorage.getItem(HISTORY_KEY);
+    let history = [];
+    if (historyStored) {
+      try {
+        history = JSON.parse(historyStored);
+      } catch {
+        history = [];
+      }
+    }
+    
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - MAX_DAYS);
+    const cutoffString = cutoffDate.toISOString().split('T')[0];
+    
+    history = history.filter(entry => entry.date >= cutoffString && entry.date !== today);
+    history.unshift({
+      date: today,
+      accomplished: reflection.accomplished,
+      grateful: reflection.grateful,
+      wastedFocus: reflection.wastedFocus,
+      improvement: reflection.improvement
+    });
+    
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    
     setHasReflectedToday(true);
     setShowReflection(false);
     return data;

@@ -1,20 +1,21 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 const STORAGE_KEY = 'nudge-favorites';
 
-export function useFavorites() {
-  const [favorites, setFavorites] = useState([]);
-
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        setFavorites(JSON.parse(stored));
-      } catch {
-        setFavorites([]);
-      }
+const getInitialFavorites = () => {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch {
+      return [];
     }
-  }, []);
+  }
+  return [];
+};
+
+export function useFavorites() {
+  const [favorites, setFavorites] = useState(getInitialFavorites);
 
   const saveToStorage = useCallback((newFavorites) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newFavorites));

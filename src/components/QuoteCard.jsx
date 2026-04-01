@@ -23,11 +23,11 @@ export function QuoteCard({ quote, isFavorite, onToggleFavorite, onNewQuote, onS
   return (
     <div className="flex flex-col items-center justify-center flex-1 px-6 py-8 animate-fade-in">
       <div className="max-w-lg w-full text-center space-y-6">
-        <blockquote className="font-serif text-2xl md:text-3xl lg:text-4xl leading-relaxed text-gray-800 dark:text-gray-100">
+        <blockquote className="font-serif text-2xl md:text-3xl lg:text-4xl leading-relaxed text-gray-800 dark:text-amber-100">
           "{quote.text}"
         </blockquote>
         
-        <cite className="not-italic text-base text-gray-500 dark:text-gray-400 block">
+        <cite className="not-italic text-base text-gray-500 dark:text-amber-300/70 block">
           — {quote.source}
         </cite>
         

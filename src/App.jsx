@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import { Header } from './components';
-import { Home, Favorites } from './pages';
+import { Home, Favorites, ReflectionHistory } from './pages';
 
 function App() {
   return (
@@ -9,6 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/favorites" element={<Favorites />} />
+        <Route path="/reflections" element={<ReflectionHistory />} />
       </Routes>
     </>
   );

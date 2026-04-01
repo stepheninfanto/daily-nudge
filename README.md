@@ -17,6 +17,7 @@ Nudge is a minimal, calming Progressive Web App that delivers relatable inspirat
 | **Quote Display** | Large, readable inspirational quotes displayed beautifully |
 | **50+ Curated Quotes** | Handpicked quotes from popular anime, web series, and movies |
 | **Daily Reflection** | 4-step evening prompt: Accomplishments, Gratitude, Wasted Focus, Improvement |
+| **Reflection History** | view past reflections in a dedicated space |
 | **Streak Tracking** | Track your daily consistency with fire badge counter |
 | **Favorites** | Save quotes you love with one tap |
 | **Share** | Share quotes via native share or clipboard |

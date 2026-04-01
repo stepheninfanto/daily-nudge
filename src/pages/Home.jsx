@@ -1,34 +1,40 @@
-import { useState, useEffect, useCallback } from 'react';
-import { QuoteCard, StreakBadge, ThemeToggle, DailyReflection } from '../components';
-import { useFavorites, useStreak, useReflection, useTheme } from '../hooks';
-import { getRandomQuote } from '../data/quotes';
+import { useState, useEffect, useCallback } from "react";
+import {
+  QuoteCard,
+  StreakBadge,
+  ThemeToggle,
+  DailyReflection,
+} from "../components";
+import { useFavorites, useStreak, useReflection, useTheme } from "../hooks";
+import { getRandomQuote } from "../data/quotes";
 
 export function Home() {
   const [currentQuote, setCurrentQuote] = useState(null);
   const [viewedIds, setViewedIds] = useState([]);
-  
+
   const { isFavorite, toggleFavorite } = useFavorites();
-  const { 
-    streak, 
-    hasCompletedToday, 
-    justReset, 
-    resetMessage, 
-    incrementStreak, 
-    clearResetMessage 
+  const {
+    streak,
+    hasCompletedToday,
+    justReset,
+    resetMessage,
+    incrementStreak,
+    clearResetMessage,
   } = useStreak();
-  const { 
-    reflection, 
-    showReflection, 
-    updateReflection, 
-    saveReflection, 
+  const {
+    reflection,
+    showReflection,
+    updateReflection,
+    saveReflection,
     skipReflection,
-    triggerReflection 
+    triggerReflection,
   } = useReflection();
   const { isDark, toggleTheme } = useTheme();
 
   useEffect(() => {
     if (!currentQuote) {
       const quote = getRandomQuote();
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentQuote(quote);
     }
   }, [currentQuote]);
@@ -37,17 +43,17 @@ export function Home() {
     if (!hasCompletedToday) {
       incrementStreak();
     }
-  }, []);
+  }, [hasCompletedToday, incrementStreak]);
 
   const handleNewQuote = useCallback(() => {
     const quote = getRandomQuote(viewedIds);
     setCurrentQuote(quote);
-    setViewedIds(prev => [...prev.slice(-20), quote.id]);
+    setViewedIds((prev) => [...prev.slice(-20), quote.id]);
   }, [viewedIds]);
 
   const handleShare = useCallback(async (quote) => {
     const shareText = `"${quote.text}"\n— ${quote.source}\n\nSent via Nudge 💭`;
-    
+
     try {
       await navigator.clipboard.writeText(shareText);
     } catch {
@@ -74,7 +80,7 @@ export function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-[100dvh]">
+    <div className="flex flex-col min-h-dvh">
       <header className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-3">
           <StreakBadge streak={streak} showAlways />
@@ -91,7 +97,7 @@ export function Home() {
         onStartReflection={triggerReflection}
       />
 
-      <footer className="pb-8 text-center">
+      <footer className="pb-32 text-center">
         <p className="text-xs text-gray-400 dark:text-gray-500 px-4">
           Take a moment. Then get back to what matters.
         </p>
