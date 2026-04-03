@@ -7,9 +7,7 @@ export function Header() {
 
   return (
     <header className="flex items-center justify-between px-4 py-3">
-      <h1 className="text-xl font-semibold text-gray-800 dark:text-amber-100">
-        Nudge
-      </h1>
+      <h1 className="text-xl font-semibold">Daily Nudge</h1>
 
       <nav className="flex items-center gap-2">
         <Link
