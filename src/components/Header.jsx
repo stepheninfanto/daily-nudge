@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Home, Heart, BookOpen } from "lucide-react";
+import { InstallPrompt } from "./InstallPrompt";
 
 export function Header() {
   const location = useLocation();
@@ -45,6 +46,8 @@ export function Header() {
         >
           <Heart className="w-5 h-5" />
         </Link>
+
+        <InstallPrompt />
       </nav>
     </header>
   );
